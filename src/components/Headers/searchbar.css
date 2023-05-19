@@ -1,0 +1,33 @@
+.searchbar {
+  background-color: beige;
+}
+.searchbar input[type="text"] {
+  background-color: #ddcdcd94;
+  border: 1px solid #aaaaaa;
+  border-radius: 4px;
+  /* box-sizing: border-box; */
+  color: #555;
+  font-size: 16px;
+  padding: 6px;
+  transition: border-color 0.3s ease;
+  width: 40%;
+  margin: 15px 250px;
+}
+.searchbar input[type="text"]:focus {
+  box-shadow: inset gray;
+  border-color: 5px #032c4d;
+  outline: #555;
+}
+
+/* Cart CSS goes here */
+
+.cart-icon{
+  background-color: #aaaaaa;
+  width: 180px;
+  height: 50px;
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 35px;
+  border-radius: 20px;
+}

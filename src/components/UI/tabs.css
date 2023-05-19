@@ -1,0 +1,25 @@
+.tabs {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.tabs-nav {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #ccc;
+}
+
+.tab {
+  padding: 10px 50px;
+  cursor: pointer;
+}
+
+.tab.active {
+  background-color: #ccc;
+}
+
+.tab-content {
+  padding: 10px;
+  flex: 1;
+}
