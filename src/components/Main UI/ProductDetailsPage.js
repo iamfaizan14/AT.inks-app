@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { ADD_TO_ORDER_LIST } from "../Redux/Reducers/orderReducer";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
 const ProductDetails = (props) => {
   // const [checked, setChecked] = useState(false);
   const [colorButtonStates, setColorButtonStates] = useState([
-    { id: 1, name: "Cyan Color", color: "outline-primary" },
+    { id: 1, name: "Cyan Color", color: "outline-primary", value: true },
     {
       id: 2,
       name: "Bluish Megenta Color",
@@ -19,7 +21,7 @@ const ProductDetails = (props) => {
     { id: 4, name: "Black Color", color: "outline-primary" },
   ]);
   const [packagingButtonStates, setPackagingButtonStates] = useState([
-    { id: 5, name: "RNB 1 Litre", color: "outline-primary" },
+    { id: 5, name: "RNB 1 Litre", color: "outline-primary", value: true },
     {
       id: 6,
       name: "5 Litre Bottle AK-RCT(467A)",
@@ -33,6 +35,12 @@ const ProductDetails = (props) => {
     { id: 8, name: "1 Litre Round XT 45 Bottle", color: "outline-primary" },
     { id: 9, name: "5 Litre RIB Can", color: "outline-primary" },
   ]);
+  const [enteredQauntity, setEnteredQauntity] = useState(12);
+
+  const updatedList = useSelector((state) => state?.order?.updatedList);
+  console.log(updatedList, "up");
+
+  const dispatch = useDispatch();
 
   const handleColorButtonClick = (buttonId) => {
     setColorButtonStates((prevState) =>
@@ -47,25 +55,45 @@ const ProductDetails = (props) => {
     setPackagingButtonStates((prevState) =>
       prevState.map((pbuttonState) =>
         pbuttonState.id === buttonId
-          ? { ...pbuttonState, pvalue: true }
-          : { ...pbuttonState, pvalue: false }
+          ? { ...pbuttonState, value: true }
+          : { ...pbuttonState, value: false }
       )
     );
   };
+
   const handleAdd = () => {
-    const selectedColorButton = colorButtonStates.find((buttonState) => buttonState.value);
-    const selectedPackagingButton = packagingButtonStates.find((buttonState) => buttonState.value);
+    if (enteredQauntity >= 12) {
+      let selectedColorButton = colorButtonStates.find(
+        (buttonState) => buttonState.value
+      );
+      let selectedPackagingButton = packagingButtonStates.find(
+        (buttonState) => buttonState.value
+      );
+      let selectedColorValue = selectedColorButton?.name;
+      let selectedPackagingValue = selectedPackagingButton?.name;
 
-    // Handle selected buttons in both sections
-    if (selectedColorButton) {
-      const selectedColorValue = selectedColorButton.name;
-      console.log('Selected Color Button:', selectedColorValue);
+      dispatch({
+        type: ADD_TO_ORDER_LIST,
+        payload: {
+          ...props.item,
+          qauntity: Number(enteredQauntity),
+          color: selectedColorValue,
+          packaging: selectedPackagingValue,
+        },
+      });
+      setIsInput(true);
+    } else {
+      setIsInput(false);
     }
+  };
 
-    if (selectedPackagingButton) {
-      const selectedPackagingValue = selectedPackagingButton.name;
-      console.log('Selected Packaging Button:', selectedPackagingValue);
-    }
+  const [isInput, setIsInput] = useState(true);
+  const qty = (e) => {
+    console.log(e.target.value, "valu");
+
+    setEnteredQauntity(e.target.value);
+
+    // setEnteredQauntity(e.target.value);
   };
 
   return (
@@ -77,17 +105,21 @@ const ProductDetails = (props) => {
             width: "150px",
             height: "200px",
           }}
-          src={props.item["productImages"]}
+          src={
+            !props.item["productImages"].length
+              ? "https://www.photoreview.com.au/wp-content/uploads/2022/07/PIXMA-G660_5.jpg"
+              : !props.item["productImages"]
+          }
           alt="item imagea"
         />
         <h2 className="mx-4">
-          {/* {props.item["itemDescription"]}{" "}
+          {props.item["itemDescription"]}
           <span>
-            {props.item["variants"].map((item, ind) => {
-              return(
-                <p>{item.grossPrice}</p> );
-            })}
-          </span> */}
+            {/* {props.item["variants"].reduce((item) => {
+              console.log(item, 'haikuch')
+              return <p>{item.grossPrice}</p>;
+            })} */}
+          </span>
         </h2>
         <div style={{ width: "450px" }}>
           <p className="mx-4">
@@ -122,7 +154,7 @@ const ProductDetails = (props) => {
                 <Button
                   className="mb-2 mx-3"
                   key={buttonState.id}
-                  variant={buttonState.pvalue ? "primary" : "outline-primary"}
+                  variant={buttonState.value ? "primary" : "outline-primary"}
                   onClick={() => handlePackagingButtonClick(buttonState.id)}
                 >
                   {buttonState.name}
@@ -136,9 +168,12 @@ const ProductDetails = (props) => {
                 type="number"
                 style={{ width: "300px" }}
                 placeholder=""
-                min={12}
-                max={100}
+                value={enteredQauntity}
+                onChange={qty}
               />
+              {!isInput ? (
+                <p style={{ color: "red" }}>quantity must be more than 12</p>
+              ) : null}
               <Button
                 className="mx-5 my-5"
                 style={{ width: "200px" }}

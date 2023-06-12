@@ -9,10 +9,8 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   z-index: 9999;
   transition: transform 0.3s ease-in-out;
-  transform: translateX(100%);
   overflow-y: auto;
   padding-bottom: 50px; /* Add padding to accommodate the close button */
-  overflow-y: auto;
 }
 
 .cart-container.open {
@@ -20,9 +18,13 @@
 }
 
 .cart-header {
-  padding: 1rem;
-  background-color: #f2f2f2;
+  /* background-color: #f2f2f2; */
+  display: flex;
+  padding: 20px;
   font-weight: bold;
+}
+.close-btn{
+  margin-left: 14vw;
 }
 
 .cart-content {
@@ -38,15 +40,51 @@
 .cart-items li {
   margin-bottom: 0.5rem;
 }
-  
-  .cart-total {
-    padding: 1rem;
-    background-color: #f2f2f2;
-    font-weight: bold;
-    width: 350px;
-  }
-  
-  .cart-products {
-    padding: 1rem;
-  }
-  
+
+.cart-total {
+  padding: 1rem;
+  background-color: #f2f2f2;
+  font-weight: bold;
+  width: 350px;
+}
+
+.cart-products {
+  padding: 1rem;
+}
+
+.cart-container::-webkit-scrollbar {
+  width: 5px;
+}
+.cart-container::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Set the background color of the track */
+}
+
+.cart-container::-webkit-scrollbar-thumb {
+  background-color: #888; /* Set the color of the scrollbar thumb */
+  border-radius: 4px; /* Set the border radius of the scrollbar thumb */
+}
+
+.cart-container::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Set the color of the scrollbar thumb on hover */
+}
+
+.heading-container{
+  background-color: #e1e1e1;
+}
+.headings img{
+  height: 40px;
+  width: 40px;
+  margin: 0;
+}
+.add-to-cart-btn{
+  margin:7vw 0 0 6vw;
+  color: white;
+  font-weight: bold;
+  width: 16vw;
+}
+.delete-button{
+  font-size: 10px;
+  height: 20px;
+  width: 20px;
+  margin-left: 50px;
+}

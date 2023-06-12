@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import "./allProducts.css";
 import axios from "axios";
 import { ProductsPage } from "./ProductsPage";
 
 export const AllProducts = () => {
+  const allProducts = useSelector((state) => state.products.products);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [products, setProducts] = useState([]);
-  const [hideCategories, setHideCategories]=useState(false)
+  const [hideCategories, setHideCategories] = useState(false);
+  const [hideHeading, setHideHeading] = useState(false);
+  const [hideHR, setHideHR] = useState(false);
+  const [hideSubCat, setHideSubCat] = useState(false);
   // const [showProducts, setShowProducts]=useState(false)
+
+  const dispatch = useDispatch();
 
   const getCategories = async () => {
     try {
@@ -16,6 +23,8 @@ export const AllProducts = () => {
         "https://elredtest.s3.amazonaws.com/reactAssignment/getCategories.json"
       );
       //   console.log(response.data);
+      allProducts.length !== 0 &&
+        dispatch({ type: "ADD-PRODUCTS", data: response.data });
       setCategories(response.data.result);
       return response.data;
     } catch (err) {
@@ -39,7 +48,10 @@ export const AllProducts = () => {
     }
   };
   const handleProducts = async (Sub_id) => {
-    setHideCategories(true)
+    setHideCategories(true);
+    setHideHeading(true);
+    setHideHR(true);
+    setHideSubCat(true);
     try {
       const response = await axios.get(
         "https://elredtest.s3.amazonaws.com/reactAssignment/getProduct_" +
@@ -58,66 +70,81 @@ export const AllProducts = () => {
   useEffect(() => {
     getCategories();
   }, []);
+
   return (
     <div className="main-container">
-      <div className="sub-container">
-        <h2>Print Heads</h2>
-        <input type="text" placeholder="search here" />
-      </div>
+      {!hideHeading ? (
+        <div className="sub-container">
+          <h4>Print Heads</h4>
+          <input
+            className="form-control me-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+          />
+        </div>
+      ) : (
+        ""
+      )}
+      {!hideHR ? <hr style={{ width: "50vw" }} /> : ""}
+
       <div>
-        {!hideCategories?
-          categories.map((item, index) => {
-            //   console.log(item);
-            return (
-              <div
-                className="card"
-                key={index + 1}
-                onClick={() => handleSubCategories(item.categoryId)}
-              >
-                <div>
-                  <img
-                    src={
-                      !item.categoryImageURL
-                        ? "https://cdn.shopify.com/s/files/1/0451/7570/1665/products/DP_D10275220_INK_BTL_BLU_30ML_1024x1024.jpg?v=1626954786"
-                        : item.categoryImageURL
-                    }
-                    alt=""
-                    className="card-image"
-                  />
-                </div>
-                <div className="card-name">{item.categoryName}</div>
-              </div>
-            );
-          }):""}
-        <hr />
+        <div className="card-row">
+          {!hideCategories
+            ? categories.map((item, index) => {
+                //   console.log(item);
+                return (
+                  <React.Fragment key={index}>
+                    <div
+                      className="card"
+                      key={index + 1}
+                      onClick={() => handleSubCategories(item.categoryId)}
+                    >
+                      <img
+                        src={
+                          !item.categoryImageURL
+                            ? "https://cdn.shopify.com/s/files/1/0451/7570/1665/products/DP_D10275220_INK_BTL_BLU_30ML_1024x1024.jpg?v=1626954786"
+                            : item.categoryImageURL
+                        }
+                        alt=""
+                        className="card-image"
+                      />
+                      <div className="card-name">{item.categoryName}</div>
+                    </div>
+                  </React.Fragment>
+                );
+              })
+            : ""}
+        </div>
+
         <div>
-          {!hideCategories?
-            subCategories.map((item, index) => {
-              //   console.log(item);
-              return (
-                <div
-                  className="card"
-                  key={index + 1}
-                  onClick={() => handleProducts(item.subCategoryId)}
-                >
-                  <div>
-                    <img
-                      src={
-                        !item.subCategoryImageURL
-                          ? "https://cdn.shopify.com/s/files/1/0451/7570/1665/products/DP_D10275220_INK_BTL_BLU_30ML_1024x1024.jpg?v=1626954786"
-                          : item.subCategoryImageURL
-                      }
-                      alt=""
-                      className="card-image"
-                    />
+          {!hideSubCat
+            ? subCategories.map((item, index) => {
+                //   console.log(item);
+                return (
+                  <div
+                    className="card"
+                    key={index + 1}
+                    onClick={() => handleProducts(item.subCategoryId)}
+                  >
+                    <div>
+                      <img
+                        src={
+                          !item.subCategoryImageURL
+                            ? "https://cdn.shopify.com/s/files/1/0451/7570/1665/products/DP_D10275220_INK_BTL_BLU_30ML_1024x1024.jpg?v=1626954786"
+                            : item.subCategoryImageURL
+                        }
+                        alt=""
+                      />
+                    </div>
+                    <div className="card-name">{item.subCategoryName}</div>
                   </div>
-                  <div className="card-name">{item.subCategoryName}</div>
-                </div>
-              );
-            }):""}
+                );
+              })
+            : ""}
         </div>
         <div>
-          <ProductsPage products={products} hide={hideCategories}/>
+          <ProductsPage products={products} hide={hideCategories} />
         </div>
       </div>
     </div>

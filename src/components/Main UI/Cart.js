@@ -1,39 +1,35 @@
 import React, { useState } from "react";
 import "./cart.css";
 import ProductDetails from "./ProductDetailsPage";
-import CloseButton from 'react-bootstrap/CloseButton';
+import CloseButton from "react-bootstrap/CloseButton";
+import { useDispatch, useSelector } from "react-redux";
+import Button from "react-bootstrap/Button";
+import { ADD_TO_CART } from "../Redux/Reducers/cartReducer";
+import { EMPTY_ORDER_LIST, REMOVE_ITEM } from "../Redux/Reducers/orderReducer";
 
 const Cart = (props) => {
-  const [cartItems, setCartItems] = useState([]);
-  const [subtotal, setSubtotal] = useState(0);
+  const orderList = useSelector(({ order }) => order.updatedList);
+  console.log(orderList,'order')
   const [isOpen] = useState(false);
 
-  const addToCart = (product) => {
-    const existingItem = cartItems.find((item) => item.id === product.id);
+  const dispatch = useDispatch();
 
-    if (existingItem) {
-      const updatedItems = cartItems.map((item) =>
-        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-      );
-      setCartItems(updatedItems);
-    } else {
-      const newItem = { ...product, quantity: 1 };
-      setCartItems([...cartItems, newItem]);
-    }
-
-    setSubtotal((prevSubtotal) => prevSubtotal + product.price);
+  const addToCartHandler = () => {
+    dispatch({
+      type: ADD_TO_CART,
+      payload: [...orderList],
+    });
+    dispatch({
+      type: EMPTY_ORDER_LIST,
+    });
   };
-
-  const calculateTax = (amount) => {
-    const taxableAmount = Math.max(0, amount - 1000);
-    const taxPercent = 9;
-    const sgst = (taxableAmount * taxPercent) / 100;
-    const cgst = (taxableAmount * taxPercent) / 100;
-    const igst = (taxableAmount * taxPercent) / 100;
-    return sgst + cgst + igst;
+  const handleDelete = (id) => {
+    console.log(id,'id')
+    dispatch({
+      type: REMOVE_ITEM,
+      payload:id,
+    });
   };
-
-  const totalAmount = subtotal + calculateTax(subtotal);
 
   return (
     <div>
@@ -43,35 +39,63 @@ const Cart = (props) => {
             props.cart || !isOpen ? "open" : ""
           }`}
         >
-          <div style={{ width: "500px" }}><ProductDetails item={props.item} /></div>
+          <div style={{ width: "500px" }}>
+            <ProductDetails item={props.item} />
+          </div>
           <div style={{ borderLeft: "1px solid grey", height: "900px" }}></div>
-          <div >
+          <div>
             <div className="cart-header">
-              <button onClick={props.funcToggle}><CloseButton/></button>
+              <h5>Order list</h5>
+              <CloseButton className="close-btn" onClick={props.funcToggle} />
             </div>
-            {cartItems.length === 0 ? (
+            <div className="heading-container">
+              <div className="headings">
+                <p>Products</p>
+                <p style={{ marginLeft: "70px" }}>Quantity</p>
+                <p>Price</p>
+              </div>
+            </div>
+            {orderList.length === 0 ? (
               <div className="cart-items">
                 <p>No items in the cart.</p>
               </div>
             ) : (
               <div className="cart-items">
-                <ul>
-                  {cartItems.map((item) => (
-                    <li key={item.id}>
-                      {item.name} - Quantity: {item.quantity}
-                    </li>
-                  ))}
-                </ul>
+                {orderList.map((item,index) => (
+                  <div className="headings" key={item.productId}>
+                    <img
+                      src={
+                        !item.productImages.length
+                          ? "https://www.photoreview.com.au/wp-content/uploads/2022/07/PIXMA-G660_5.jpg"
+                          : item.productImages
+                      }
+                      alt="cart-added"
+                    />
+                    <p
+                      style={{
+                        marginLeft: "0",
+                        width: "11vw",
+                        fontSize: "11px",
+                      }}
+                    >
+                      {item.itemDescription}
+                    </p>
+                    <p style={{ fontSize: "11px" }}>{item.qauntity}</p>
+                    <p style={{ marginLeft: "3vw", fontSize: "11px" }}>
+                      {item.variants[0]["grossPrice"]}
+                    </p>
+                    <CloseButton
+                      className="delete-button"
+                      onClick={()=>handleDelete(index)}
+                    />
+                  </div>
+                ))}
+
+                <Button className="add-to-cart-btn" onClick={addToCartHandler}>
+                  Add to cart
+                </Button>
               </div>
             )}
-            <div className="cart-total">
-              <p>Subtotal: {subtotal}</p>
-              <p>SGST: {calculateTax(subtotal)}</p>
-              <p>CGST: {calculateTax(subtotal)}</p>
-              <p>IGST: {calculateTax(subtotal)}</p>
-              <hr />
-              <p>Total Amount: {totalAmount}</p>
-            </div>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "./allProducts.css";
-import { FaArrowLeft, FaHeart } from "react-icons/fa";
+import "./productPage.css";
+import { FaArrowLeft } from "react-icons/fa";
 import { AllProducts } from "./AllProducts";
 import Cart from "./Cart";
 
@@ -9,8 +9,10 @@ export const ProductsPage = (props) => {
   const [item, setItem] = useState([]);
   const [back, setBack] = useState(false);
   const [cart, setCart] = useState(false);
+  const [productsCart, setProductsCart] = useState(false);
   const handleBack = () => {
     setBack(true);
+    setProductsCart(true);
   };
   const handleProductData = (item) => {
     setItem(item);
@@ -23,13 +25,13 @@ export const ProductsPage = (props) => {
     <div>
       {cart && <Cart funcToggle={handleToggle} item={item} />}
       {back ? <AllProducts /> : ""}
-      {props.hide && (
+      {!productsCart && (
         <h5>
           <FaArrowLeft onClick={handleBack} /> All Products
         </h5>
-      )}
-      {
-        <div>
+      ) }
+      {!productsCart ? (
+        <div className="product-card-container">
           {props.hide && props.products.length === 0 ? (
             <p>No data to display</p>
           ) : (
@@ -37,32 +39,35 @@ export const ProductsPage = (props) => {
               // console.log(item)
               return (
                 <div
-                  className="card"
+                  className="product-card"
                   key={index + 1}
                   onClick={() => {
                     handleProductData(item);
                   }}
                 >
                   <div>
-                    <FaHeart />
                     <img
                       src={
-                        !item.productImages
-                          ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJvM4KjOxUiLa7_QRJNF9mKQc0txyP0wyl9ivju8x6uc1ofXeUvYcHWZauGcIVcYUs16o&usqp=CAU"
+                        !item.productImages.length
+                          ? "https://www.photoreview.com.au/wp-content/uploads/2022/07/PIXMA-G660_5.jpg"
                           : item.productImages
                       }
                       alt=""
-                      className="card-image"
+                      className="product-card-image"
                     />
                   </div>
-                  <div className="card-name">{item.itemDescription}</div>
+                  <div className="product-card-name">
+                    {item.itemDescription}
+                    <span className="product-card-icon">&#9825;</span>
+                  </div>
                 </div>
               );
             })
           )}
         </div>
-      }
-
+      ) : (
+        ""
+      )}
     </div>
   );
 };

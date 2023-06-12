@@ -1,0 +1,39 @@
+.headings {
+  display: flex;
+}
+.headings p {
+  padding: 0 12px;
+  margin:7px 7px ;
+  font-weight: bold;
+}
+.inner{
+    display: flex;
+    margin:0 0 0 26px;
+}
+.main-container {
+  background-color: white;
+  border-radius: 5px;
+  margin: 0px 10px;
+  height: 81vh;
+  width: 21vw;
+}
+.no-items img {
+  margin: 18vh 6vw 0;
+  height: 70px;
+}
+.no-items p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
+.see-all-button button{
+  background-color: white;
+  color: red;
+  border: none;
+}
+.see-all-button button:hover{
+  background-color: white;
+  color: red;
+  border: none;
+}
