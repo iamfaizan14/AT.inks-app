@@ -24,14 +24,18 @@ export const ProductsPage = (props) => {
   return (
     <div>
       {cart && <Cart funcToggle={handleToggle} item={item} />}
-      {back ? <AllProducts /> : ""}
-      {!productsCart && (
-        <h5>
-          <FaArrowLeft onClick={handleBack} /> All Products
-        </h5>
-      ) }
+      {back && (
+        <div>
+          {" "}
+          <AllProducts />
+        </div>
+      )}
+
       {!productsCart ? (
         <div className="product-card-container">
+          {/* <h5>
+            <FaArrowLeft onClick={handleBack} /> All Products
+          </h5> */}
           {props.hide && props.products.length === 0 ? (
             <p>No data to display</p>
           ) : (

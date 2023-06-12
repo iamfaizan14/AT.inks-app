@@ -93,7 +93,6 @@ const ProductDetails = (props) => {
 
     setEnteredQauntity(e.target.value);
 
-    // setEnteredQauntity(e.target.value);
   };
 
   return (
